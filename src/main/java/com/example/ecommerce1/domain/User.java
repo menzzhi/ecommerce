@@ -33,6 +33,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Address> address;
 
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
+
     public User() {
     }
 
