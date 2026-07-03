@@ -2,10 +2,7 @@ package com.example.ecommerce1.controller;
 
 import com.example.ecommerce1.service.CartService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/carts")
@@ -19,8 +16,9 @@ public class CartController {
 
     @PostMapping("/create/{userId}/{productId}")
     public ResponseEntity<Void> createCart(@PathVariable Long userId,
-                                           @PathVariable Long productId){
-        cartService.createCart(userId, productId);
+                                           @PathVariable Long productId,
+                                           @RequestParam Integer quantity){
+        cartService.createCart(userId, productId, quantity);
         return ResponseEntity.noContent().build();
     }
 
