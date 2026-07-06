@@ -2,14 +2,16 @@ package com.example.ecommerce1.service;
 
 import com.example.ecommerce1.domain.Address;
 import com.example.ecommerce1.domain.User;
-import com.example.ecommerce1.dto.AddressRequest;
-import com.example.ecommerce1.dto.CreateUserRequest;
-import com.example.ecommerce1.dto.UserRequest;
+import com.example.ecommerce1.dto.*;
 import com.example.ecommerce1.repository.AddressRepository;
 import com.example.ecommerce1.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -40,5 +42,30 @@ public class UserService {
                 createUserRequest.endereco().estado());
 
         addressRepository.save(address);
+    }
+
+    public List<UserResponse> getAllUsers() {
+        List<User> allUsers = userRepository.findAll();
+        return allUsers.stream().map(u -> new UserResponse(u.getNome(), u.getEmail()))
+                .collect(Collectors.toList());
+    }
+
+    public void deleteUserById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        userRepository.delete(user);
+    }
+
+    public UserUpdate updateEmailAndName(UserUpdate userUpdate, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        user.setEmail(userUpdate.email());
+        user.setNome(userUpdate.nome());
+
+        User updatedUser = userRepository.save(user);
+
+        return new UserUpdate(updatedUser.getNome(), updatedUser.getEmail());
     }
 }
