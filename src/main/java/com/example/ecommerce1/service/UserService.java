@@ -5,13 +5,13 @@ import com.example.ecommerce1.domain.User;
 import com.example.ecommerce1.dto.*;
 import com.example.ecommerce1.repository.AddressRepository;
 import com.example.ecommerce1.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -44,10 +44,9 @@ public class UserService {
         addressRepository.save(address);
     }
 
-    public List<UserResponse> getAllUsers() {
-        List<User> allUsers = userRepository.findAll();
-        return allUsers.stream().map(u -> new UserResponse(u.getNome(), u.getEmail()))
-                .collect(Collectors.toList());
+    public Page<UserResponse> getAllUsers(int pageNumber, int itemsNumber) {
+        return userRepository.findAll(PageRequest.of(pageNumber, itemsNumber)).map(
+                u -> new UserResponse(u.getNome(), u.getEmail()));
     }
 
     public void deleteUserById(Long userId) {

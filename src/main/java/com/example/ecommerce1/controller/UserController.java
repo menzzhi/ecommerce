@@ -1,7 +1,9 @@
 package com.example.ecommerce1.controller;
 
+import com.example.ecommerce1.domain.User;
 import com.example.ecommerce1.dto.*;
 import com.example.ecommerce1.service.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +26,9 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getAllUser(){
-        List<UserResponse> allUsers = userService.getAllUsers();
+    public ResponseEntity<Page<UserResponse>> getAllUser(@RequestParam int page,
+                                                         @RequestParam int items){
+        Page<UserResponse> allUsers = userService.getAllUsers(page, items);
         return ResponseEntity.ok(allUsers);
     }
 
