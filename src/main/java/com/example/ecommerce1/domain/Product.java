@@ -101,4 +101,8 @@ public class Product {
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
+
+    public void setEs(String nome) {
+
+    }
 }

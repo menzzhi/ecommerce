@@ -1,12 +1,12 @@
 package com.example.ecommerce1.controller;
 
 import com.example.ecommerce1.dto.ProductRequest;
+import com.example.ecommerce1.dto.ProductResponse;
+import com.example.ecommerce1.dto.ProductUpdate;
 import com.example.ecommerce1.service.ProductService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/products")
@@ -19,9 +19,28 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createProduct(@RequestBody ProductRequest productRequest){
+    public ResponseEntity<String> createProduct(@RequestBody ProductRequest productRequest){
         productService.createProduct(productRequest);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Seu produto foi criado com sucesso!");
     }
 
+    @GetMapping
+    public ResponseEntity<Page<ProductResponse>> getAllProducts(@RequestParam int page,
+                                                                @RequestParam int items){
+        Page<ProductResponse> allProducts = productService.getAllProducts(page, items);
+        return ResponseEntity.ok(allProducts);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteProductById(@PathVariable Long id){
+        productService.deleteProduct(id);
+        return ResponseEntity.ok("Seu produto foi deletado com sucesso!");
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateProductInformation(@RequestBody ProductUpdate productUpdate,
+                                                           @RequestParam Long productId){
+        productService.updateProduct(productId, productUpdate);
+        return ResponseEntity.ok("Seu produto foi atualizado com sucesso!");
+    }
 }

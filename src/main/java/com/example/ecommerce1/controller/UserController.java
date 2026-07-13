@@ -20,9 +20,9 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createUser(@RequestBody CreateUserRequest createUserRequest){
+    public ResponseEntity<String> createUser(@RequestBody CreateUserRequest createUserRequest){
         userService.createUser(createUserRequest);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Usuário criado com sucesso!");
     }
 
     @GetMapping
@@ -33,16 +33,15 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<Void> deleteUserById(@PathVariable Long userId){
+    public ResponseEntity<String> deleteUserById(@PathVariable Long userId){
         userService.deleteUserById(userId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Usuário deletado com sucesso!");
     }
 
     @PutMapping("/update/{userId}")
-    public ResponseEntity<UserUpdate> updateUserInformation(@RequestBody UserUpdate userUpdate,
+    public ResponseEntity<String> updateUserInformation(@RequestBody UserUpdate userUpdate,
                                                               @PathVariable Long userId){
-        UserUpdate usrUpdated = userService.updateEmailAndName(userUpdate, userId);
-
-        return ResponseEntity.ok(usrUpdated);
+        userService.updateEmailAndName(userUpdate, userId);
+        return ResponseEntity.ok("Usuário deletado com sucesso!");
     }
 }

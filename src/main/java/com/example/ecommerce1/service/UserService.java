@@ -44,7 +44,7 @@ public class UserService {
         addressRepository.save(address);
     }
 
-    public Page<UserResponse> getAllUsers(int pageNumber, int itemsNumber) {
+    public Page<UserResponse> getAllUsers(int pageNumber, Integer itemsNumber) {
         return userRepository.findAll(PageRequest.of(pageNumber, itemsNumber)).map(
                 u -> new UserResponse(u.getNome(), u.getEmail()));
     }
@@ -56,7 +56,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public UserUpdate updateEmailAndName(UserUpdate userUpdate, Long userId) {
+    public void updateEmailAndName(UserUpdate userUpdate, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -64,7 +64,5 @@ public class UserService {
         user.setNome(userUpdate.nome());
 
         User updatedUser = userRepository.save(user);
-
-        return new UserUpdate(updatedUser.getNome(), updatedUser.getEmail());
     }
 }

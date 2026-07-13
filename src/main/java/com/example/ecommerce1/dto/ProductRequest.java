@@ -6,7 +6,7 @@ public record ProductRequest(
         Long categoriaId,
         String nome,
         String descricao,
-        BigDecimal preco,
+        Double preco,
         int quantidadeEstoque,
         boolean ativo
 ) {

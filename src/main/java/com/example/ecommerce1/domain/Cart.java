@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "tb_carts")
-public class Cart {
+public class    Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -22,7 +22,7 @@ public class Cart {
     @UpdateTimestamp
     private LocalDateTime updatedTimestamp;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartItem> cartItem;
 
     public Cart() {
@@ -54,5 +54,13 @@ public class Cart {
 
     public void setUpdatedTimestamp(LocalDateTime updatedTimestamp) {
         this.updatedTimestamp = updatedTimestamp;
+    }
+
+    public List<CartItem> getCartItem() {
+        return cartItem;
+    }
+
+    public void setCartItem(List<CartItem> cartItem) {
+        this.cartItem = cartItem;
     }
 }
