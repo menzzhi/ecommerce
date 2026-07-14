@@ -29,9 +29,9 @@ public class CartController {
         return ResponseEntity.ok(cart);
     }
 
-    @PutMapping("/update/{userId}/{productId}")
-    public ResponseEntity<Void> updateCart(@PathVariable Long userId,
-                                           @PathVariable Long productId,
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateCart(@RequestParam Long userId,
+                                           @RequestParam Long productId,
                                            @RequestParam Integer quantity){
         cartService.updateCart(userId, productId, quantity);
         return ResponseEntity.noContent().build();

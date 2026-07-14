@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "order_item")
+@Table(name = "tb_order_item")
 public class OrderItem {
 
     @Id
@@ -23,17 +23,17 @@ public class OrderItem {
 
     private int quantidade;
 
-    @Column(name = "preco_unitario")
-    private BigDecimal precoUnitario;
+    @Column(name = "preco_total")
+    private BigDecimal precoTotal;
 
     public OrderItem() {
     }
 
-    public OrderItem(Order order, Product product, int quantidade, BigDecimal precoUnitario) {
+    public OrderItem(Order order, Product product, int quantidade, BigDecimal precoTotal) {
         this.order = order;
         this.product = product;
         this.quantidade = quantidade;
-        this.precoUnitario = precoUnitario;
+        this.precoTotal = precoTotal;
     }
 
     public Long getOrderItemId() {
@@ -68,11 +68,11 @@ public class OrderItem {
         this.quantidade = quantidade;
     }
 
-    public BigDecimal getPrecoUnitario() {
-        return precoUnitario;
+    public BigDecimal getPrecoTotal() {
+        return precoTotal;
     }
 
-    public void setPrecoUnitario(BigDecimal precoUnitario) {
-        this.precoUnitario = precoUnitario;
+    public void setPrecoTotal(BigDecimal precoTotal) {
+        this.precoTotal = precoTotal;
     }
 }

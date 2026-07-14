@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_order")
@@ -30,17 +31,22 @@ public class Order {
 
     private BigDecimal frete;
 
+    @OneToMany(mappedBy = "order")
+    private List<OrderItem> orderItem;
+
     @CreationTimestamp
-    private LocalDateTime realizado_em;
+    private LocalDateTime realizadoEm;
 
     public Order() {
     }
 
-    public Order(User user, Address address, BigDecimal valorTotal, BigDecimal frete) {
+    public Order(Status status, User user, Address address, BigDecimal valorTotal, BigDecimal frete, List<OrderItem> orderItem) {
+        this.status = status;
         this.user = user;
         this.address = address;
         this.valorTotal = valorTotal;
         this.frete = frete;
+        this.orderItem = orderItem;
     }
 
     public Long getOrderId() {
@@ -83,15 +89,31 @@ public class Order {
         this.frete = frete;
     }
 
-    public LocalDateTime getRealizado_em() {
-        return realizado_em;
+    public LocalDateTime getRealizadoEm() {
+        return realizadoEm;
     }
 
-    public void setRealizado_em(LocalDateTime realizado_em) {
-        this.realizado_em = realizado_em;
+    public void setRealizadoEm(LocalDateTime realizado_em) {
+        this.realizadoEm = realizado_em;
     }
 
-    private enum Status{
+    public List<OrderItem> getOrderItem() {
+        return orderItem;
+    }
+
+    public void setOrderItem(List<OrderItem> orderItem) {
+        this.orderItem = orderItem;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public enum Status{
         PENDENTE("Pendente"),
         CONFIRMADO("Confirmado"),
         ENVIADO("Enviado"),
