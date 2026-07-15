@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -29,24 +30,34 @@ public class UserService {
         User user = new User(
                 createUserRequest.usuario().nome(),
                 createUserRequest.usuario().email(),
-                createUserRequest.usuario().senha(),
-                new ArrayList<>());
+                createUserRequest.usuario().senha());
 
-        User repositoryUser = userRepository.save(user);
+        userRepository.save(user);
 
         Address address = new Address(
-                repositoryUser,
+                user,
                 createUserRequest.endereco().logradouro(),
                 createUserRequest.endereco().cidade(),
                 createUserRequest.endereco().cep(),
                 createUserRequest.endereco().estado());
 
+        user.setAddress(List.of(address));
+
         addressRepository.save(address);
     }
 
     public Page<UserResponse> getAllUsers(int pageNumber, Integer itemsNumber) {
+
         return userRepository.findAll(PageRequest.of(pageNumber, itemsNumber)).map(
-                u -> new UserResponse(u.getNome(), u.getEmail()));
+                u -> new UserResponse(
+                        u.getNome(),
+                        u.getEmail(),
+                        u.getAddress().stream().map(
+                                address -> new AddressResponses(
+                                        address.getLogradouro(),
+                                        address.getEstado(),
+                                        address.getCidade(),
+                                        address.getCep())).toList()));
     }
 
     public void deleteUserById(Long userId) {
@@ -63,6 +74,6 @@ public class UserService {
         user.setEmail(userUpdate.email());
         user.setNome(userUpdate.nome());
 
-        User updatedUser = userRepository.save(user);
+        userRepository.save(user);
     }
 }

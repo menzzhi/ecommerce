@@ -48,13 +48,6 @@ public class User {
         this.senhaHash = senhaHash;
     }
 
-    public User(String nome, String email, String senhaHash, List<Address> address) {
-        this.nome = nome;
-        this.email = email;
-        this.senhaHash = senhaHash;
-        this.address = address;
-    }
-
     public String getNome() {
         return nome;
     }

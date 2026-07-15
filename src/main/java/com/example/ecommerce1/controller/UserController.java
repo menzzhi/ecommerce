@@ -32,16 +32,16 @@ public class UserController {
         return ResponseEntity.ok(allUsers);
     }
 
-    @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<String> deleteUserById(@PathVariable Long userId){
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUserById(@RequestParam Long userId){
         userService.deleteUserById(userId);
         return ResponseEntity.ok("Usuário deletado com sucesso!");
     }
 
-    @PutMapping("/update/{userId}")
+    @PutMapping("/update")
     public ResponseEntity<String> updateUserInformation(@RequestBody UserUpdate userUpdate,
-                                                              @PathVariable Long userId){
+                                                              @RequestParam Long userId){
         userService.updateEmailAndName(userUpdate, userId);
-        return ResponseEntity.ok("Usuário deletado com sucesso!");
+        return ResponseEntity.ok("Usuário atualizado com sucesso!");
     }
 }

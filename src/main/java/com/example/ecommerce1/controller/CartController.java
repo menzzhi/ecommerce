@@ -5,6 +5,8 @@ import com.example.ecommerce1.service.CartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/carts")
 public class CartController {
@@ -15,18 +17,24 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/create/{userId}/{productId}")
-    public ResponseEntity<Void> createCart(@PathVariable Long userId,
-                                           @PathVariable Long productId,
+    @PostMapping("/create")
+    public ResponseEntity<Void> createCart(@RequestParam Long userId,
+                                           @RequestParam Long productId,
                                            @RequestParam Integer quantity){
         cartService.createCart(userId, productId, quantity);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<CartResponse> getUserCartById(@PathVariable Long userId){
+    @GetMapping
+    public ResponseEntity<CartResponse> getUserCartById(@RequestParam Long userId){
         CartResponse cart = cartService.getCart(userId);
         return ResponseEntity.ok(cart);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<CartResponse>> getAllCarts(){
+        List<CartResponse> allCarts = cartService.getAllCarts();
+        return ResponseEntity.ok(allCarts);
     }
 
     @PutMapping("/update")
@@ -37,8 +45,8 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<Void> deleteCart(@PathVariable Long userId){
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteCart(@RequestParam Long userId){
         cartService.deleteCart(userId);
         return ResponseEntity.noContent().build();
     }

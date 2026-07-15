@@ -3,8 +3,10 @@ package com.example.ecommerce1.domain;
 import jakarta.persistence.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Entity
 @Table(name = "tb_carts")
@@ -18,6 +20,8 @@ public class Cart {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    private BigDecimal precoTotalCarrinho;
 
     @UpdateTimestamp
     private LocalDateTime updatedTimestamp;
@@ -63,4 +67,17 @@ public class Cart {
     public void setCartItem(List<CartItem> cartItem) {
         this.cartItem = cartItem;
     }
+
+    public Double pegarPrecoTotal(List<CartItem> cartItem){
+        AtomicReference<Double> precoTotal = new AtomicReference<>(0.0);
+        cartItem.stream().forEach(
+                        cartItems -> precoTotal.set(precoTotal.get() + cartItems.getPreco().doubleValue()));
+        this.precoTotalCarrinho = BigDecimal.valueOf(precoTotal.get());
+        return precoTotal.get();
+    }
+
+    public BigDecimal getPrecoTotalCarrinho() {
+        return precoTotalCarrinho;
+    }
+
 }

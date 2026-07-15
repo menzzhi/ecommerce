@@ -24,7 +24,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderResponse>> getAllOrdersUser(@RequestParam Long userId){
+    public ResponseEntity<List<OrderResponse>> getAllOrdersByUserId(@RequestParam Long userId){
         List<OrderResponse> all = orderService.getAll(userId);
         return ResponseEntity.ok(all);
     }

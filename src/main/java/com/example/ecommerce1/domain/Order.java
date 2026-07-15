@@ -40,13 +40,12 @@ public class Order {
     public Order() {
     }
 
-    public Order(Status status, User user, Address address, BigDecimal valorTotal, BigDecimal frete, List<OrderItem> orderItem) {
+    public Order(Status status, User user, Address address, BigDecimal valorTotal, BigDecimal frete) {
         this.status = status;
         this.user = user;
         this.address = address;
         this.valorTotal = valorTotal;
         this.frete = frete;
-        this.orderItem = orderItem;
     }
 
     public Long getOrderId() {

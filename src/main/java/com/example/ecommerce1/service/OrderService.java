@@ -47,33 +47,31 @@ public class OrderService {
 
         cart.getCartItem().forEach(c -> precoTotal.set(precoTotal.get() + c.getPreco().doubleValue()));
 
-        List<OrderItem> orderItems = cart.getCartItem().stream().map(
-                c -> new OrderItem(
-                        null,
-                        c.getProduct(),
-                        c.getQuantidade(),
-                        c.getPreco())).toList();
-
-        List<OrderItem> orderItemSaved = orderItems.stream().map(orderItemRepository::save).toList();
-
         Order order = new Order(
                 Order.Status.CONFIRMADO,
                 user,
                 user.getAddress().get(0),
                 BigDecimal.valueOf(precoTotal.get()),
-                BigDecimal.valueOf(0.0),
-                orderItemSaved);
+                BigDecimal.valueOf(0.0));
 
         Order savedOrder = orderRepository.save(order);
 
-        orderItemSaved.forEach(o -> o.setOrder(savedOrder));
-        orderItemRepository.saveAll(orderItemSaved);
+        List<OrderItem> orderItems = cart.getCartItem().stream().map(
+                c -> new OrderItem(
+                        order,
+                        c.getProduct(),
+                        c.getQuantidade(),
+                        c.getPreco())).toList();
+
+        order.setOrderItem(orderItems);
+
+        orderItemRepository.saveAll(orderItems);
 
         user.setCart(null);
         cartRepository.delete(cart);
         cartRepository.flush();
 
-        List<OrderItemResponse> orderItemResponse = orderItemSaved.stream().map(
+        List<OrderItemResponse> orderItemResponse = order.getOrderItem().stream().map(
                 o -> new OrderItemResponse(
                 o.getProduct().getNome(),
                 o.getQuantidade(),

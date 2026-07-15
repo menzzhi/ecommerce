@@ -64,11 +64,14 @@ public class CartService {
                 i.getQuantidade(),
                 i.getPreco().doubleValue())).toList();
 
-        AtomicReference<Double> precoTotal = new AtomicReference<>((double) 0);
+        AtomicReference<Double> precoTotal = new AtomicReference<>( 0.0);
         cart.getCartItem().forEach(c -> precoTotal.set(precoTotal.get() + c.getPreco().doubleValue()));
 
 
-        return new CartResponse(cartItemList, precoTotal.get());
+        return new CartResponse(
+                user.getNome(),
+                cartItemList,
+                precoTotal.get());
     }
 
     public void updateCart(Long userId, Long productId, Integer quantity) {
@@ -97,5 +100,21 @@ public class CartService {
 
         cartRepository.delete(cart);
         cartRepository.flush();
+    }
+
+    public List<CartResponse> getAllCarts() {
+
+        return cartRepository.findAll().stream().map(
+                carts -> new CartResponse(
+                        carts.getUser().getNome(),
+                        carts.getCartItem().stream().map(
+
+                                cartItem -> new CartItemResponse(
+                                        cartItem.getProduct().getNome(),
+                                        cartItem.getQuantidade(),
+                                        (cartItem.getProduct().getPreco().doubleValue() * cartItem.getQuantidade().doubleValue()))).toList(),
+
+                        carts.pegarPrecoTotal(carts.getCartItem()))).toList();
+
     }
 }
