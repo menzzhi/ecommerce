@@ -62,14 +62,14 @@ public class UserService {
 
     public void deleteUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         userRepository.delete(user);
     }
 
     public void updateEmailAndName(UserUpdate userUpdate, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         user.setEmail(userUpdate.email());
         user.setNome(userUpdate.nome());

@@ -40,23 +40,24 @@ public class CartService {
                            Integer quantity) {
 
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado produto na base de dados."));
 
         Cart cart = new Cart(user);
 
         cartRepository.save(cart);
 
-        CartItem cartItem = new CartItem(cart, product, quantity, BigDecimal.valueOf(quantity * product.getPreco().doubleValue()));
+        CartItem cartItem = new CartItem(
+                cart, product, quantity, BigDecimal.valueOf(quantity * product.getPreco().doubleValue()));
 
         cartItemRepository.save(cartItem);
     }
 
     public CartResponse getCart(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         Cart cart = user.getCart();
         List<CartItemResponse> cartItemList = cart.getCartItem().stream().map(i -> new CartItemResponse(
@@ -76,14 +77,15 @@ public class CartService {
 
     public void updateCart(Long userId, Long productId, Integer quantity) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado produto na base de dados."));
 
         Cart cart = user.getCart();
 
-        CartItem cartItem = new CartItem(cart, product, quantity, BigDecimal.valueOf(quantity * product.getPreco().doubleValue()));
+        CartItem cartItem = new CartItem(
+                cart, product, quantity, BigDecimal.valueOf(quantity * product.getPreco().doubleValue()));
 
         cartItemRepository.save(cartItem);
 
@@ -93,7 +95,7 @@ public class CartService {
     @Transactional
     public void deleteCart(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         Cart cart = user.getCart();
         user.setCart(null);

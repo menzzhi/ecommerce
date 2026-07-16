@@ -12,6 +12,7 @@ import com.example.ecommerce1.repository.OrderRepository;
 import com.example.ecommerce1.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
@@ -35,10 +36,11 @@ public class OrderService {
         this.cartRepository = cartRepository;
     }
 
+    @Transactional
     public OrderResponse finishOrder(Long userId) {
 
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         Cart cart = user.getCart();
 
@@ -62,6 +64,14 @@ public class OrderService {
                         c.getProduct(),
                         c.getQuantidade(),
                         c.getPreco())).toList();
+
+        for (OrderItem o : orderItems) {
+            if (o.getProduct().getQuantidadeEstoque() >= o.getQuantidade()){
+                o.getProduct().setQuantidadeEstoque(o.getProduct().getQuantidadeEstoque() - o.getQuantidade());
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+        }
 
         order.setOrderItem(orderItems);
 
@@ -88,7 +98,7 @@ public class OrderService {
     public List<OrderResponse> getAll(Long userId) {
 
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         List<Order> order = user.getOrder();
 

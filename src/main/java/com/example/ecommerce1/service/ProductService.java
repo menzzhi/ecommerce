@@ -28,7 +28,7 @@ public class ProductService {
 
     public void createProduct(ProductRequest productRequest) {
         Category category = categoryRepository.findById(productRequest.categoriaId()).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado categoria na base de dados."));
 
         Product product = new Product(
                 category,
@@ -53,14 +53,14 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado produto na base de dados."));
 
         productRepository.delete(product);
     }
 
     public void updateProduct(Long productId, ProductUpdate productUpdate) {
         Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado produto na base de dados."));
 
         if (!productUpdate.nome().isEmpty()){
             product.setNome(productUpdate.nome());
