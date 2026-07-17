@@ -8,6 +8,7 @@ import com.example.ecommerce1.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,18 +20,23 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public UserService(UserRepository userRepository,
-                       AddressRepository addressRepository) {
+                       AddressRepository addressRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public void createUser(CreateUserRequest createUserRequest) {
+        String passwordEncoded =
+                bCryptPasswordEncoder.encode(createUserRequest.usuario().senha());
+
         User user = new User(
                 createUserRequest.usuario().nome(),
                 createUserRequest.usuario().email(),
-                createUserRequest.usuario().senha());
+                passwordEncoded);
 
         userRepository.save(user);
 
