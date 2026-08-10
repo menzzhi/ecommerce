@@ -3,7 +3,6 @@ package com.example.ecommerce1.domain;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,13 +20,19 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "senha_hash")
-    private String senhaHash;
-
-    // Posteriormente será criado um atributo para definir a role do usuário.
+    @Column(name = "senha")
+    private String senha;
 
     @CreationTimestamp
     private LocalDateTime creationTimestamp;
+
+    @ManyToMany
+    @JoinTable(
+            name = "tb_users_roles",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "roleId")
+    )
+    private List<Role> role;
 
     @Column(name = "endereco")
     @OneToMany(mappedBy = "user")
@@ -42,10 +47,11 @@ public class User {
     public User() {
     }
 
-    public User(String nome, String email, String senhaHash) {
+    public User(String nome, String email, String senha, List<Role> role) {
         this.nome = nome;
         this.email = email;
-        this.senhaHash = senhaHash;
+        this.senha = senha;
+        this.role = role;
     }
 
     public String getNome() {
@@ -64,12 +70,12 @@ public class User {
         this.email = email;
     }
 
-    public String getSenhaHash() {
-        return senhaHash;
+    public String getSenha() {
+        return senha;
     }
 
-    public void setSenhaHash(String senhaHash) {
-        this.senhaHash = senhaHash;
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
     public LocalDateTime getCreationTimestamp() {
@@ -102,5 +108,13 @@ public class User {
 
     public void setOrder(List<Order> order) {
         this.order = order;
+    }
+
+    public List<Role> getRole() {
+        return role;
+    }
+
+    public void setRole(List<Role> role) {
+        this.role = role;
     }
 }

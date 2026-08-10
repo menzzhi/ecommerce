@@ -1,15 +1,18 @@
 package com.example.ecommerce1.service;
 
 import com.example.ecommerce1.domain.Address;
+import com.example.ecommerce1.domain.Role;
 import com.example.ecommerce1.domain.User;
 import com.example.ecommerce1.dto.*;
 import com.example.ecommerce1.repository.AddressRepository;
+import com.example.ecommerce1.repository.RoleRepository;
 import com.example.ecommerce1.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,26 +25,30 @@ public class UserService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private JwtEncoder jwtEncoder;
+    private final RoleRepository roleRepository;
 
     public UserService(UserRepository userRepository,
                        AddressRepository addressRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
-                       JwtEncoder jwtEncoder) {
+                       RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.jwtEncoder = jwtEncoder;
+        this.roleRepository = roleRepository;
     }
 
     public void createUser(CreateUserRequest createUserRequest) {
         String passwordEncoded =
                 bCryptPasswordEncoder.encode(createUserRequest.usuario().senha());
 
+        Role role = roleRepository.findById(2L).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
         User user = new User(
                 createUserRequest.usuario().nome(),
                 createUserRequest.usuario().email(),
-                passwordEncoded);
+                passwordEncoded,
+                List.of(role));
 
         userRepository.save(user);
 
@@ -78,8 +85,8 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public void updateEmailAndName(UserUpdate userUpdate, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
+    public void updateEmailAndName(UserUpdate userUpdate, JwtAuthenticationToken token) {
+        User user = userRepository.findByEmail(token.getName()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         user.setEmail(userUpdate.email());

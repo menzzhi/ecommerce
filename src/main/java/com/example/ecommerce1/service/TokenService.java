@@ -33,7 +33,7 @@ public class TokenService {
         User user = userRepository.findByEmail(loginRequest.email()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        boolean matches = passwordEncoder.matches(loginRequest.password(), user.getSenhaHash());
+        boolean matches = passwordEncoder.matches(loginRequest.password(), user.getSenha());
 
         if (!matches){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -45,6 +45,7 @@ public class TokenService {
                 .builder()
                 .issuer("myapplication")
                 .subject(user.getEmail())
+                .claim("scope", user.getRole().stream().findFirst())
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plusSeconds(expiresAt))
                 .build();
