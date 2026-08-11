@@ -11,6 +11,7 @@ import com.example.ecommerce1.repository.OrderItemRepository;
 import com.example.ecommerce1.repository.OrderRepository;
 import com.example.ecommerce1.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -37,9 +38,9 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse finishOrder(Long userId) {
+    public OrderResponse finishOrder(JwtAuthenticationToken token) {
 
-        User user = userRepository.findById(userId).orElseThrow(
+        User user = userRepository.findByEmail(token.getName()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         Cart cart = user.getCart();
@@ -65,7 +66,7 @@ public class OrderService {
                         c.getQuantidade(),
                         c.getPreco())).toList();
 
-        for (OrderItem o : orderItems) {
+        for (OrderItem o : orderItems) { // Regra para diminuir o estoque
             if (o.getProduct().getQuantidadeEstoque() >= o.getQuantidade()){
                 o.getProduct().setQuantidadeEstoque(o.getProduct().getQuantidadeEstoque() - o.getQuantidade());
             } else {
@@ -95,9 +96,9 @@ public class OrderService {
                 orderItemResponse);
     }
 
-    public List<OrderResponse> getAll(Long userId) {
+    public List<OrderResponse> getAll(JwtAuthenticationToken token) {
 
-        User user = userRepository.findById(userId).orElseThrow(
+        User user = userRepository.findByEmail(token.getName()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         List<Order> order = user.getOrder();

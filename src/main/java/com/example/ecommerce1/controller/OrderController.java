@@ -3,6 +3,7 @@ package com.example.ecommerce1.controller;
 import com.example.ecommerce1.dto.OrderResponse;
 import com.example.ecommerce1.service.OrderService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,14 +19,14 @@ public class OrderController {
     }
 
     @PostMapping("/finalizarPedido")
-    public ResponseEntity<OrderResponse> finalizarPedido(@RequestParam Long userId){
-        OrderResponse orderResponse = orderService.finishOrder(userId);
+    public ResponseEntity<OrderResponse> takeOrder(JwtAuthenticationToken token){
+        OrderResponse orderResponse = orderService.finishOrder(token);
         return ResponseEntity.ok(orderResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderResponse>> getAllOrdersByUserId(@RequestParam Long userId){
-        List<OrderResponse> all = orderService.getAll(userId);
+    public ResponseEntity<List<OrderResponse>> getAllMyOrders(JwtAuthenticationToken token){
+        List<OrderResponse> all = orderService.getAll(token);
         return ResponseEntity.ok(all);
     }
 }

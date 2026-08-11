@@ -64,9 +64,9 @@ public class UserService {
         addressRepository.save(address);
     }
 
-    public Page<UserResponse> getAllUsers(int pageNumber, Integer itemsNumber) {
+    public List<UserResponse> getAllUsers(int pageNumber, Integer itemsNumber) {
 
-        return userRepository.findAll(PageRequest.of(pageNumber, itemsNumber)).map(
+        return userRepository.findAll().stream().map(
                 u -> new UserResponse(
                         u.getNome(),
                         u.getEmail(),
@@ -75,7 +75,7 @@ public class UserService {
                                         address.getLogradouro(),
                                         address.getEstado(),
                                         address.getCidade(),
-                                        address.getCep())).toList()));
+                                        address.getCep())).toList())).toList();
     }
 
     public void deleteUserById(Long userId) {

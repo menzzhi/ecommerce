@@ -67,6 +67,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain (HttpSecurity http){
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/users/register").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/categories").permitAll()
+                        .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session

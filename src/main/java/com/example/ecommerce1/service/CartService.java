@@ -11,6 +11,7 @@ import com.example.ecommerce1.repository.CartRepository;
 import com.example.ecommerce1.repository.ProductRepository;
 import com.example.ecommerce1.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -35,11 +36,11 @@ public class CartService {
         this.cartItemRepository = cartItemRepository;
     }
 
-    public void createCart(Long userId,
+    public void createCart(JwtAuthenticationToken token,
                            Long productId,
                            Integer quantity) {
 
-        User user = userRepository.findById(userId).orElseThrow(
+        User user = userRepository.findByEmail(token.getName()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         Product product = productRepository.findById(productId).orElseThrow(
@@ -55,8 +56,8 @@ public class CartService {
         cartItemRepository.save(cartItem);
     }
 
-    public CartResponse getCart(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
+    public CartResponse getCart(JwtAuthenticationToken token) {
+        User user = userRepository.findByEmail(token.getName()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         Cart cart = user.getCart();
@@ -75,8 +76,10 @@ public class CartService {
                 precoTotal.get());
     }
 
-    public void updateCart(Long userId, Long productId, Integer quantity) {
-        User user = userRepository.findById(userId).orElseThrow(
+    public void updateCart(JwtAuthenticationToken token,
+                           Long productId,
+                           Integer quantity) {
+        User user = userRepository.findByEmail(token.getName()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         Product product = productRepository.findById(productId).orElseThrow(
@@ -93,8 +96,8 @@ public class CartService {
     }
 
     @Transactional
-    public void deleteCart(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
+    public void deleteCart(JwtAuthenticationToken token) {
+        User user = userRepository.findByEmail(token.getName()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não encontrado usuário na base de dados."));
 
         Cart cart = user.getCart();

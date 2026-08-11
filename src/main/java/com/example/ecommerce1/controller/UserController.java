@@ -8,6 +8,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -26,9 +28,10 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<Page<UserResponse>> getAllUser(@RequestParam int page,
-                                                         @RequestParam int items){
-        Page<UserResponse> allUsers = userService.getAllUsers(page, items);
+    public ResponseEntity<List<UserResponse>> getAllUser(@RequestParam int page,
+                                                         @RequestParam int items,
+                                                         JwtAuthenticationToken token){
+        var allUsers = userService.getAllUsers(page, items);
         return ResponseEntity.ok(allUsers);
     }
 

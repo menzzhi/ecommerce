@@ -4,6 +4,7 @@ import com.example.ecommerce1.dto.CategoryRequest;
 import com.example.ecommerce1.dto.CategoryResponse;
 import com.example.ecommerce1.service.CategoryService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +18,7 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<Void> createCategory(@RequestBody CategoryRequest categoryRequest){
         categoryService.createCategory(categoryRequest);
         return ResponseEntity.noContent().build();

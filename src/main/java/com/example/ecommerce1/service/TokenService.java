@@ -1,5 +1,6 @@
 package com.example.ecommerce1.service;
 
+import com.example.ecommerce1.domain.Role;
 import com.example.ecommerce1.domain.User;
 import com.example.ecommerce1.dto.LoginRequest;
 import com.example.ecommerce1.dto.LoginResponse;
@@ -33,6 +34,8 @@ public class TokenService {
         User user = userRepository.findByEmail(loginRequest.email()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
+        String roleName = user.getRole().stream().findFirst().get().getName();
+
         boolean matches = passwordEncoder.matches(loginRequest.password(), user.getSenha());
 
         if (!matches){
@@ -45,13 +48,13 @@ public class TokenService {
                 .builder()
                 .issuer("myapplication")
                 .subject(user.getEmail())
-                .claim("scope", user.getRole().stream().findFirst())
+                .claim("scope", roleName)
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plusSeconds(expiresAt))
                 .build();
 
-        String tokenValue = jwtEncoder.encode(JwtEncoderParameters.from(payload)).getTokenValue();
+        String accessToken = jwtEncoder.encode(JwtEncoderParameters.from(payload)).getTokenValue();
 
-        return new LoginResponse(tokenValue, expiresAt);
+        return new LoginResponse(accessToken, expiresAt);
     }
 }
