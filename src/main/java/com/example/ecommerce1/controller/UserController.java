@@ -20,12 +20,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody CreateUserRequest createUserRequest){
-        userService.createUser(createUserRequest);
-        return ResponseEntity.ok("Usuário criado com sucesso!");
-    }
-
     @GetMapping
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<List<UserResponse>> getAllUser(@RequestParam int page,
