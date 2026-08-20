@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<String> notFoundUserException(Exception ex){
+    public ResponseEntity<String> notFoundException(Exception ex){
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());

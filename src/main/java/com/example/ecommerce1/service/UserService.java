@@ -41,8 +41,7 @@ public class UserService {
         String passwordEncoded =
                 bCryptPasswordEncoder.encode(createUserRequest.usuario().senha());
 
-        Role role = roleRepository.findById(2L).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Role role = roleRepository.findById(2L).orElseThrow();
 
         User user = new User(
                 createUserRequest.usuario().nome(),
